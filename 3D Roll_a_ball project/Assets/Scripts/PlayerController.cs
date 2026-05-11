@@ -7,11 +7,14 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private float movementX;
     private float movementZ;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    Vector3 startPosition;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        startPosition = transform.position;
     }
+
     void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -31,5 +34,11 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
         }
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            transform.position = startPosition; // reset player position to the starting point
+            rb.linearVelocity = Vector3.zero; // reset player velocity to zero to stop any movement after respawn
+        }
     }
+
 }
