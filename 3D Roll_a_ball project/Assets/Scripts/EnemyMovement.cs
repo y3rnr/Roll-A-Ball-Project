@@ -1,19 +1,21 @@
 using UnityEngine;
+using UnityEngine.AI; // we need to include this namespace to use the NavMeshAgent component
 
 public class EnemyMovement : MonoBehaviour
 {
-    public Transform player; // reference to the player's transform, which we will set in the Unity editor
+    public Transform player;
+    private NavMeshAgent navMeshAgent;
 
-    public float speed = 1f; // the speed at which the enemy moves towards the player
-
-    void Update() // Update is called once per frame
+    void Start()
     {
-        Vector3 direction = player.position - transform.position; // creates a vector pointing: enemy -> player
-
-        direction.y = 0f; // we don't want the enemy to move up or down, so we set the y component to 0
-
-        direction.Normalize(); // makes the vector have a length of 1, so it only represents the direction, not the distance
-
-        transform.position += direction * speed * Time.deltaTime; // moves the enemy towards the player at the specified speed, multiplied by Time.deltaTime to move enemy smoothly every frame
+        navMeshAgent = GetComponent<NavMeshAgent>(); // get the NavMeshAgent component attached to the enemy
+    }
+        
+    void Update()
+    {
+        if (navMeshAgent != null) // check if the NavMeshAgent component is not null
+        {
+            navMeshAgent.SetDestination(player.position); // set the destination of the NavMeshAgent to the player's position
+        }
     }
 }

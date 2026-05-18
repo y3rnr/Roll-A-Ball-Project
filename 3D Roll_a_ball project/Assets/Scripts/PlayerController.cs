@@ -12,13 +12,10 @@ public class PlayerController : MonoBehaviour
     private int count;
     private float movementX;
     private float movementZ;
-    Vector3 startPosition; // variable to store the starting position of the player
-
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        startPosition = transform.position;
         count = 0;
         SetCountText();
         winTextObject.SetActive(false);
@@ -37,6 +34,16 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * speed);
     }
 
+    void OnCollisionEnter(Collision collision) // OnCollisionEnter is called when the Player collides with other ogject
+    {
+        if (collision.gameObject.CompareTag("Enemy")) // check if the other object has the tag "Enemy"
+        {
+            Destroy(gameObject); // destroy the player object when it collides with an enemy
+            winTextObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+        }
+    }
+
     void OnTriggerEnter(Collider other) // OnTriggerEnter is called when the Player collides with other ogject
     {
         if (other.gameObject.CompareTag("Pickup")) // check if the other object has the tag "Pickup"
@@ -53,6 +60,8 @@ public class PlayerController : MonoBehaviour
         if (count >= 12)
         {
             winTextObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Win!";
+            Destroy(GameObject.Find("Enemy")); // destroy the enemy object when the player collects all pickups
         }
     }
 
