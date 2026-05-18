@@ -13,7 +13,7 @@ public class EnemyMovement : MonoBehaviour
         
     void Update()
     {
-        if (navMeshAgent != null) // check if the NavMeshAgent component is not null
+        if (navMeshAgent != null && player != null) // check if the NavMeshAgent component is not null
         {
             navMeshAgent.SetDestination(player.position); // set the destination of the NavMeshAgent to the player's position
         }

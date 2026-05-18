@@ -4,14 +4,18 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    // Rigidbody of the player.
+    private Rigidbody rb;
     public float speed = 0;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
 
-    private Rigidbody rb;
     private int count;
     private float movementX;
     private float movementZ;
+    // Jumping variables
+    public float jumpForce = 6f;
+    private bool isGrounded = true;
 
     void Start()
     {
@@ -28,6 +32,16 @@ public class PlayerController : MonoBehaviour
         movementZ = movementVector.y;
     }
 
+    void OnJump()
+    {
+        if (isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            isGrounded = false;
+        }
+    }
+
     void FixedUpdate() // FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
     {
         Vector3 movement = new Vector3(movementX, 0.0f, movementZ); // create a movement vector based on the input
@@ -41,6 +55,10 @@ public class PlayerController : MonoBehaviour
             Destroy(gameObject); // destroy the player object when it collides with an enemy
             winTextObject.SetActive(true);
             winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+        }
+        if (collision.gameObject.CompareTag("Ground")) // check if the other object has the tag "Ground"
+        {
+            isGrounded = true; // set isGrounded to true when the player collides with the ground
         }
     }
 
