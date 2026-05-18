@@ -1,18 +1,27 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed = 0;
+    public TextMeshProUGUI countText;
+    public GameObject winTextObject;
+
     private Rigidbody rb;
+    private int count;
     private float movementX;
     private float movementZ;
-    Vector3 startPosition;
+    Vector3 startPosition; // variable to store the starting position of the player
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         startPosition = transform.position;
+        count = 0;
+        SetCountText();
+        winTextObject.SetActive(false);
     }
 
     void OnMove(InputValue movementValue)
@@ -22,22 +31,28 @@ public class PlayerController : MonoBehaviour
         movementZ = movementVector.y;
     }
 
-    void FixedUpdate()
+    void FixedUpdate() // FixedUpdate is called at a fixed interval and is independent of frame rate. Put physics code here.
     {
-        Vector3 movement = new Vector3(movementX, 0.0f, movementZ);
+        Vector3 movement = new Vector3(movementX, 0.0f, movementZ); // create a movement vector based on the input
         rb.AddForce(movement * speed);
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other) // OnTriggerEnter is called when the Player collides with other ogject
     {
-        if (other.gameObject.CompareTag("Pickup"))
+        if (other.gameObject.CompareTag("Pickup")) // check if the other object has the tag "Pickup"
         {
-            other.gameObject.SetActive(false);
+            other.gameObject.SetActive(false); // deactivate the pickup object when the player collides with it
+            count = count + 1; // increment the count variable by 1
+            SetCountText(); // update the count text on the UI
         }
-        if (other.gameObject.CompareTag("Enemy"))
+    }
+
+    void SetCountText()
+    {
+        countText.text = "Count: " + count.ToString();
+        if (count >= 12)
         {
-            transform.position = startPosition; // reset player position to the starting point
-            rb.linearVelocity = Vector3.zero; // reset player velocity to zero to stop any movement after respawn
+            winTextObject.SetActive(true);
         }
     }
 
